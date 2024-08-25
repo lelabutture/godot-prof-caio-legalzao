@@ -1,33 +1,36 @@
-[gd_scene load_steps=3 format=3 uid="uid://b6ivo3owl03xo"]
+[gd_scene load_steps=4 format=3 uid="uid://b6ivo3owl03xo"]
 
-[ext_resource type="PackedScene" uid="uid://byr4bv7eekbdb" path="res://rigid_body_2d.tscn" id="1_7vtpi"]
-[ext_resource type="PackedScene" uid="uid://d38pudw2xfoii" path="res://prefabs/player.tscn" id="2_op6u2"]
+[ext_resource type="PackedScene" uid="uid://d38pudw2xfoii" path="res://scenes/player.tscn" id="2_op6u2"]
+[ext_resource type="Script" path="res://bugpathlocation.gd" id="2_yhy1f"]
+
+[sub_resource type="Curve2D" id="Curve2D_lxsy1"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 472, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 8)
+}
+point_count = 6
 
 [node name="main" type="Node2D"]
 
-[node name="enemy" parent="." instance=ExtResource("1_7vtpi")]
-position = Vector2(85, 81)
+[node name="player" parent="." instance=ExtResource("2_op6u2")]
+collision_mask = 2
 
-[node name="player" parent="enemy" instance=ExtResource("2_op6u2")]
-position = Vector2(-2, 5)
+[node name="bugtimer" type="Timer" parent="."]
+wait_time = 0.5
 
-[node name="enemy2" parent="." instance=ExtResource("1_7vtpi")]
-position = Vector2(383, 91)
+[node name="scoretimer" type="Timer" parent="."]
 
-[node name="player" parent="enemy2" instance=ExtResource("2_op6u2")]
+[node name="startimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
 
-[node name="enemy3" parent="." instance=ExtResource("1_7vtpi")]
-position = Vector2(236, 200)
-script = null
+[node name="bugPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lxsy1")
 
-[node name="player" parent="enemy3" instance=ExtResource("2_op6u2")]
+[node name="bugpathlocation" type="PathFollow2D" parent="bugPath"]
+position = Vector2(0, -3)
+rotation = 1.5708
+script = ExtResource("2_yhy1f")
 
-[node name="enemy4" parent="." instance=ExtResource("1_7vtpi")]
-position = Vector2(395, 372)
-
-[node name="player" parent="enemy4" instance=ExtResource("2_op6u2")]
-
-[node name="enemy5" parent="." instance=ExtResource("1_7vtpi")]
-position = Vector2(93, 386)
-
-[node name="player" parent="enemy5" instance=ExtResource("2_op6u2")]
+[connection signal="timeout" from="bugtimer" to="player" method="_on_bugtimer_timeout"]
+[connection signal="timeout" from="scoretimer" to="player" method="_on_scoretimer_timeout"]
+[connection signal="timeout" from="startimer" to="player" method="_on_startimer_timeout"]
